@@ -1,2 +1,48 @@
-# nandhakumar-
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
+
+# Load dataset
+df = pd.read_csv("kc_house_data.csv")
+
+# Select top features correlated with price
+features = ['sqft_living', 'bedrooms', 'bathrooms', 'grade', 'view', 'sqft_above', 'sqft_basement']
+X = df[features]
+y = df['price']
+
+# Train/test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train the model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Evaluate the model
+y_pred = model.predict(X_test)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+r2 = r2_score(y_test, y_pred)
+
+print(f"\n📊 Model Evaluation:")
+print(f"Root Mean Squared Error (RMSE): ${rmse:,.2f}")
+print(f"R² Score: {r2:.4f}\n")
+
+# Ask user for input
+try:
+    sqft_living = float(input("Enter square feet of living space: "))
+    bedrooms = int(input("Enter number of bedrooms: "))
+    bathrooms = float(input("Enter number of bathrooms: "))
+    grade = int(input("Enter house grade (1-13): "))
+    view = int(input("Enter view rating (0-4): "))
+    sqft_above = float(input("Enter square feet above ground: "))
+    sqft_basement = float(input("Enter square feet of basement: "))
+
+    # Predict
+    input_data = [[sqft_living, bedrooms, bathrooms, grade, view, sqft_above, sqft_basement]]
+    predicted_price = model.predict(input_data)[0]
+    print(f"\n💰 Predicted House Price: ${predicted_price:,.2f}")
+
+except ValueError:
+    print("❌ Invalid input. Please enter correct numeric values.")# nandhakumar-
 house price prediction
